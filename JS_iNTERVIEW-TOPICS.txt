@@ -1,0 +1,298 @@
+Observer pattern is a Design pattern (ONE-TO-MANY dependency relationship)
+
+Like a Event Listener but more usefull
+
+commonly used for creating event handler system
+
+
+
+
+ 
+CLIENT-SERVER-MODEL
+
+
+Client  --  is an service where user make reuests
+Server  --  is a program that listen the requests and send response
+Servers provide functionalities,(not device, has static IP) 
+
+WEB Servers as a Apollo graphql serve to HTPP requests
+DataBase Servers run DBs
+
+
+
+1)Client-Server model works based on Centralized structure
+  works based on HTTP protocol
+
+2)Peer-To-Peer model works based on DeCentralized structure
+   There is no server and client. Both computers can provide request and response 
+  Any computer are functinally equal
+
+
+Client and Server knows each other based on IP
+
+
+Application Programming Interface (API)
+ 
+
+Hyper Text Transfer Protocol(HTTP 80)
+  run webpages over the network
+
+
+Hyper Text Transfer Protocol Secure (HTTPS 443)
+  is encrypted the connection with 2 protocols
+    1) SSL --  Secure Socket Layer
+    2) TLS --  Transport Layer Security (NEW)
+
+run webpages over the network
+
+
+Representational State Transfer (REST)
+    This is a set of rules that define how applications or devices can connect to and communicate with each other
+    Communicate via HTTP requests to perform standard database functions lik a CRUD
+    HTTP verbs (POST, GET, PUT, PATCH, DELETE)
+	1) Statelessness  --  Server side dont store any info about the client request
+	2) Cacheability --  can be cacheable on both of sides
+	3) Uniform interface  --  Requests for the same resource always must be same no matter where request cames from
+	4) Client-server decoupling  --  Client and Server applications must be completely independent  
+
+
+
+Transmission Control Protocol (TCP)
+   Tells us how to send data,we make relation between computers
+
+
+Socket --  define an endpoint for communication which used in CLient-Server systems
+
+
+The event loop has an endless loop, where the JavaScript engine waits for tasks, executes them and then sleeps, waiting for more tasks.
+
+
+
+1)Micro Task
+   process.nextTick, Promises, queueMicrotask, MutationObserver
+
+2)Macro Task
+   setTimeout, setInterval, setImmediate, I/O, UI Rendering
+
+
+
+
+
+
+There are different ways for client-side to interact with the server-side in real time:
+
+1) Long-Polling
+   Provides approximately 6 parallel connections from the browser.
+   Long polling is the oldest ways and hence is supported on all web browsers
+
+
+2) Websockets
+   Provides up to 1024 parallel connections from the browser
+   WebSocket is a computer communication protocol works over the TCP protocol that  providing real-time data transfer
+
+
+4) Comet(Ajax Push)
+Socker more new Version
+
+2 methods are avaliable 
+   Streaming: Events are pushed from server to client over a single persistent request and works based on XMLHttpRequest
+
+
+
+
+
+
+
+Error-First Callback in Node.js
+
+    It is only convention,NodeJS works like taht sometimes
+    
+    const ErrorFirstCallback = (err, data) =>  {}
+    fs.readFile(file, ErrorFirstCallback);
+
+
+
+
+
+ACID properties:
+
+   Transactional semantics are often described in terms of ACID properties.
+
+	1)Atomicity -- transaction entirety completes or fails .
+	2)Consistency -- prevent the lack of data
+	3)Isolation -- two operations do not interfere(mix) with each other.
+	4)Durability -- transaction are saved and the changes survive any type of failure (network, disk, CPU or a power failure).
+
+
+
+Browser Capability issues
+
+1)No CSS Reset
+2)No Doctype or Incorrect Doctype in HTML Files
+3) Stylesheet Related Issues
+4)Outdated Browser Detection
+5)Layout Compatibility
+
+
+
+					Web storage API (Limit 5MB)
+
+
+STORE DATA AS A STRING
+
+    1)Session storage    is cleaned after browser is closed
+    2)Local storage      is cleaned after tab is closed
+***/***
+
+
+
+
+Cookies 
+   Cookies are data, stored in small text files, on your computer.
+   store user credentials, webpages links history and etc.
+
+
+Cookies must be clean by users because third person can attack and use credentials from cookies
+
+
+
+Indexeddb   NoSQL
+    provides an object store inside a browser
+    
+    Store any type of data(File/Blob) unlike Web storage API
+    Transaction
+    
+
+WebRTC (Real-Time Communication, P2P)
+    works based on peer-to-peer model  (client-toclient)
+    used for data transfer,video,auido meetings
+    is available on all modern browsers
+
+    
+Service Workers
+
+    Works independently of webpages based on HTTPS
+    used for web-push notifications
+    use cache API for offline applications
+    use postMessage instead of directly access to DOM.
+    
+
+
+Curring 
+
+function volume(l, w, h) {
+    return l * w * h;
+}
+
+volume(5,6,7)
+--------------------------------
+function volume(h) {
+    return (w) => {
+        return (l) => {
+            return l * w * h
+        }
+    }
+}
+
+const f= volume(5);
+f(6)(7);  
+
+
+
+
+What are Observables?
+
+	Observables are just one way to work with async JavaScript like Promise
+	Works based on Observer Design Pattern.
+	Observables are not yet inherit to JS
+	Angular,React use RxJS(Reactive Extension for JavaScript) to impliment Observables
+        RxJs defines its own Observable class 
+	define callback functions: next(), error(), complete().
+
+
+
+MIXINS (https://medium.com/flutter-t%C3%BCrkiye/mixin-nedir-ve-neden-kullan%C4%B1l%C4%B1r-7195e141784)
+
+    We can multiple impliment with "WITH" keyword
+    Inherit each other with "ON" keyword
+    if we want to share some common methods between the class we can use
+
+    
+
+      mixin EngineMixin {
+ 	 bool initialPushHappened = false;
+  	 void initialPush(initialPushHappened ) {
+	      initialPushHappened =true
+     	      print('Initial push is triggered');
+  	   }
+	}
+
+
+        mixin ElectricEngine ON EngineMixin {
+  	   void consumeElectric() {
+   	       print('Electric is consumed');
+           }
+       }
+
+ 
+       class Bicycle WITH PedalMixin {}
+
+
+
+
+
+
+GIT Commands
+
+clone --- used for downloading existing source code from a remote repository to Computer
+branch --- developers are able to work in parallel on the same project  (git branch --list)
+checkout  ---  used for switch 1 branch to other
+status ---   gives all necessary info about branch
+add ---  add our files to the next commit (git add -A)
+commit --- save files
+push  ---  upload your commits to Remote Repository
+pull  --- get updates from the remote repo.       combination of (git fetch + git merge)
+revert  ---   doesn't touch the commit history.   (git revert Commithash)
+merge  ---  integrates your feature branch with all of its commits to the master 
+
+
+
+
+
+Last Commit --  called HEAD for the branch
+
+
+get reset
+git reset --soft
+git reset --hard
+git reset --mixed
+
+git log --pretty=oneline    
+	62941cdede31d7e7eec1e76ada67babefcc64cc4 wip
+	d3dd7f0df9eb580cf934fb5a10d25e141466f6f1 Category Seeder
+
+
+git reset --soft 08d467a   (7 symbol)
+
+git reset --soft HEAD~1    (en-son)
+git reset --soft HEAD~5    (en-son-5inci)  
+git reset --mixed HEAD~1
+git reset --hardHEAD~1
+
+
+
+
+
+
+
+NETWORK
+
+helps to connection between devices
+
+
+
+Binary Search  --  O(LogN)
+
+  
+
+

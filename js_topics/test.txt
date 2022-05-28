@@ -1,0 +1,130 @@
+---
+
+Phases of the Node JS Event Loop(Setİmmediate,NextTick,MicroTask,SetTimeout)
+Əvvəlcə NodeJS -in arxada Libuv və V8 işlətdiyini xatırlamalı olacağıq çünki event loop-un source codu libuv ilə yazılıb
+Libuv Event loop mexanizminin NodeJS də işləməsini təmin edən C kitabxanasıdır.
+
+---
+
+---
+
+Phases Overview
+6 əsas Phase-dan ibarətdir və hər phase FIFO concept ilə işləyən Queue-ə sahibdir.
+idle,Prepare yalnız Event loop daxilində işlənən phase istifadə olunduğu üçün çox yerdə diaqramlarda göstərilmir.
+
+---
+
+---
+
+Poll phase:
+Bütün synchronous kodlar və I/O process-ləri bu phase-də icra olunur.
+
+---
+
+Is not within an I/O cycle
+I/O operation-dan kənarda islədiyi və hər ikisinin başlama vaxtı eyni olduğuna görə random sıra ilə çıxır output .
+$ node test.js    --> First Time
+Timeout
+Immediate
+$ node test.js    --> Second Time
+Immediate
+Timeout
+
+---
+
+Within an I/O cycle
+I/O operation-ın icində setImmediate timer-dən asılı olmayaraq həmişə ilk işə düşür.
+$ node test.js    --> Always will be same
+Immediate
+Timeout
+
+---
+
+Timers phase:
+setTimeout() və setInterval() callbacks bu phase-də icra edilir.
+
+---
+
+İdle, Prepare:
+Yalnız event loop daxilində istifadə olunan Internal Phase-di.
+
+---
+
+Check: setImmediate() callbacks çağrılır bu mərhələdə
+
+---
+
+Close callbacks:
+Event-ın close olması ilə bağlı processlər handle olunur bu phase-də
+
+---
+
+Pending callbacks phase:
+I/O,Networking,crypto operation-ları ilə bağlı callback-ləri icra edir.
+pending callbacks - for almost all built-in functions callbacks, except timers, immediates, close types
+
+TCP error-ları ilə bağlı callback-ləri yerinə yetirir.
+Məsələn (ECONNREFUSED) bu error çixanda sistemin ehtiyacı vsr o errorla bağlı report versin. Həmin report verilənə kimi callback bu phase-də gözləyir.
+
+---
+
+---
+
+Indi isə daha dərinə gedərək  və bütün case-ləri biryerdə yoxlayaq:
+
+---
+
+Initialization stage
+Ən başda root leveldəki bütün kodlar normal olaraq yuxarıdan aşağı oxunuraraq event loop-un uyğun phase-lərinə yazılır.
+"Start " və "End " sync process olduğu üçün ən tez onlar çıxacaq console-a.
+setTimeout(A) timers phase-inə yazılacaq
+setImmediate(B) check phase-inə yazılacaq
+readFile(C) I/O operation olduğu üçün pool phase-inə yazılacaq
+Promise(G) microtask-da işlədiyi üçün microtaskQueue-ə yazılacaq
+nextTick(I) xüsusi nextTickQueue-də işlədiyi üçün nextTickQueue-ə yazılacaq
+
+---
+
+In Next Circle
+nextTickQueue check olunur, I işə düşür,
+microTaskQueue check olunur, G işə düşür və G-in içindəki H-də nextTickQueue-yə yazılır,
+Yenidən nextTickQueue check olunur, H işə düşür,
+Timers phase check olunur, A və J işə düşür,
+Idle phase və Pending Callbacks phase check olunur. Heçne baş vermir,
+Pool phase check olunur, readFile(C) işə düşür,
+Check phase check olunur, B işə düşür,
+Ən sonda Pool phase-də C-in içindəkilər uyğun queue-lərə əlavə olunur(Timer-D, Check -E, NextTickQueue-F),
+Əvvəlki ardıcıllıqla icra olunur F → E → D .
+
+Note: SetImmediate I/O operation daxilində həmişə SetTimeout-dan əvvəl işliyir.("Within an I/O cycle" yuxarıda qeyd etmişəm).
+START
+END
+Next Tick              //I
+Promise                //G
+Promise Next Tick      //H
+setTimeout 1           //A
+setTimeout 2           //J
+setImmediate           //B
+readFile Next Tick     //F
+readFile setImmediate  //E
+readFile setTimeout    //D
+
+---
+
+Daha aydım anlaşılması üçün process-i GIF formada aşağıda yerləşdirmişəm:
+
+Process.nectTick və Promises MicraTask hesab edilir.
+Micro taska opposite to Macro tasks
+Settimmediate - only works after the I/O callback phase
+process.nextTick()is the fastest execution of asynchronous code outside of Event Loop, and it's called at the end of the current phase
+In Node.js, each iteration of an Event Loop is called a tick.
+
+process.nextTick() vs setImmediate
+process.nextTick() fires immediately on the same phase
+setImmediate() fires on the following iteration or 'tick' of the event loop
+
+setImmediate() is designed to execute a script once the current poll phase completes.
+setImmediate Current pool phase biten kimi ise dusur
+
+Source-1
+Source-2
